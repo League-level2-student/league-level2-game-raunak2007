@@ -1,12 +1,9 @@
-
-
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 
-public class LeagueInvadersRunner {
-	
+public class WheresPrimoRunner {
 	public static void main(String[] args) {
 		JFrame frame=new JFrame();
-		new ObstacleDerby(frame).setup();
+		WheresPrimo p=new WheresPrimo(frame);
+		p.createUI();
 	}
 }

@@ -1,18 +1,29 @@
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import javax.imageio.ImageIO;
 
-class Rocketship extends GameObject {
+public class Player {
 	public static BufferedImage image;
 	public static boolean needImage = true;
 	public static boolean gotImage = false;	
-	Rocketship(int x, int y, int width, int height) {
-		super(x, y, width, height);
+	int x;
+	int y;
+	int width;
+	int speed;
+	int height;
+	Rectangle collisionBox;
+	Player(int x, int y, int width, int height) {
+		this.x=x;
+		this.y=y;
+		this.width=width;
+		this.height=height;
+		this.collisionBox=new Rectangle(x,y,width, height);
 		speed=10;
 		if (needImage) {
-		    loadImage ("elprimo.jpg");
+		    loadImage ("player.png");
 		}
 		// TODO Auto-generated constructor stub
 	} 
@@ -33,6 +44,14 @@ class Rocketship extends GameObject {
 		x-=s/2;
         x-=s/2;
     }
+	public void down(int s) {
+		y+=s/2;
+        y+=s/2;
+    }
+	public void up(int s) {
+        y-=s/2;
+        y-=s/2;
+    }
 	void loadImage(String imageFile) {
 	    if (needImage) {
 	        try {
@@ -46,3 +65,4 @@ class Rocketship extends GameObject {
 	}
 
 }
+
