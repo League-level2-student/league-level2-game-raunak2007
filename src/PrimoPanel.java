@@ -10,8 +10,11 @@ import java.awt.image.BufferedImage;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
+import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.JTextPane;
 import javax.swing.Timer;
 
 public class PrimoPanel extends JPanel implements ActionListener, KeyListener {
@@ -63,10 +66,10 @@ public class PrimoPanel extends JPanel implements ActionListener, KeyListener {
 		g.fillRect(0, 0, WheresPrimo.WIDTH, WheresPrimo.HEIGHT);
 		g.setFont(new Font("Helvetica",Font.BOLD,24));
 		g.setColor(Color.WHITE);
+		g.setFont(font);
 		g.drawString("Where's Waldo", 100, 100);
 		g.drawString("Press ENTER to start", 100, 400);
 		g.drawString("Press SPACE for instructions", 100, 600);
-
 	}
 	void setWaldo(Graphics g) {
 		waldo=new Waldo(new Random().nextInt(460),new Random().nextInt(790));
