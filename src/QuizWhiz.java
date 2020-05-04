@@ -2,13 +2,13 @@ import javax.swing.JFrame;
 
 public class QuizWhiz {
 	JFrame frame;
-	public static final int WIDTH=500;
+	public static final int WIDTH=300;
 	public static final int HEIGHT=800;
 	GamePanel panel;
 	QuestionManager manager=new QuestionManager(panel);
 	QuizWhiz(JFrame f){
 		this.frame=f;
-		this.panel=new GamePanel(f);
+		this.panel=new GamePanel();
 	}
      void createUI() {
     	 frame.setSize(WIDTH,HEIGHT);

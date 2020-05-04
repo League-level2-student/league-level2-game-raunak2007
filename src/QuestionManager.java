@@ -6,6 +6,7 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
@@ -24,36 +25,48 @@ public class QuestionManager {
 	QuestionManager(GamePanel p){
 		this.panel=p;
 	}
-	void chooseQuestion(Graphics g,JButton button) {
-		g.setColor(Color.GRAY);
-		g.drawString("Choosing category...", 100, 400);
-		panel.loadImage("wheel.jpg");
-		panel.draw(g,200,200,100,100);
+	void chooseQuestion(JButton button) {
+		JLabel label1=new JLabel();
+		JLabel label2=new JLabel();
+		label1.setLocation(100, 600);
+		label1.setText("Choosing category");
+		//panel.loadImage("wheel.jpg");
+		//panel.draw(g,200,200,100,100);
 		category=new Random().nextInt(5);
 		setValue=new Random().nextInt(3);
 		if(category==0) {
-			g.setColor(Color.BLACK);
-			g.drawString("Your category is History",100,600);
+			//g.setColor(Color.BLACK);
+			//g.drawString("Your category is History",100,600);
+			label2.setLocation(100, 600);
+			label2.setText("Your category is History");
 			gameQuestions.add(historyQuestions[setValue]);
 		}
 		if(category==1){
-			g.setColor(Color.BLACK);
-			g.drawString("Your category is Science",100,600);
+			//g.setColor(Color.BLACK);
+			//g.drawString("Your category is Science",100,600);
+			label2.setLocation(100, 600);
+			label2.setText("Your category is Science");
 			gameQuestions.add(scienceQuestions[setValue]);
 		}
 		if(category==2) {
-			g.setColor(Color.BLACK);
-			g.drawString("Your category is Geography",100,600);
+			//g.setColor(Color.BLACK);
+			//g.drawString("Your category is Geography",100,600);
+			label2.setLocation(100, 600);
+			label2.setText("Your category is Geography");
 			gameQuestions.add(geographyQuestions[setValue]);
 		}
 		if(category==3){
-			g.setColor(Color.BLACK);
-			g.drawString("Your category is Music",100,600);
+			//g.setColor(Color.BLACK);
+			//g.drawString("Your category is Music",100,600);
+			label2.setLocation(100, 600);
+			label2.setText("Your category is Music");
 			gameQuestions.add(musicQuestions[setValue]);
 		}
 		if(category==4){
-			g.setColor(Color.BLACK);
-			g.drawString("Your category is Literature",100,600);
+			//g.setColor(Color.BLACK);
+			//g.drawString("Your category is Literature",100,600);
+			label2.setLocation(100, 600);
+			label2.setText("Your category is Literature");
 			gameQuestions.add(literatureQuestions[setValue]);
 		}
 	}
@@ -76,11 +89,11 @@ public class QuestionManager {
 		if(showQuestion(q).equalsIgnoreCase(q.answer)) {
 			JOptionPane.showMessageDialog(null,"You're correct");
 			panel.score+=q.points;
-			panel.button.setText("Next Question");
+			//panel.button.setText("Next Question");
 		}
 		else {
 			JOptionPane.showMessageDialog(null,"Sorry, the correct answer is:"+q.answer);
-			panel.button.setText("Next Question");
+			//panel.button.setText("Next Question");
 		}
 		panel.numberOfTimes++;
 	}
