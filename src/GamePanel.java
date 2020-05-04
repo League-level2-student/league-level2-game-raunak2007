@@ -74,9 +74,20 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 	}
 	*/
 	void drawMenuState(Graphics g) {
-		this.setBackground(new Color(200,100,0));
-		g.setColor(new Color(200,100,0));
-		g.drawString("Quiz Whiz", 100, 100);
+		//g.setColor(new Color(200,100,0));
+	    g.fillRect(0, 0, QuizWhiz.WIDTH, QuizWhiz.HEIGHT);
+		JLabel label=new JLabel();
+		label.setVisible(true);
+		label.setText("Quiz Whiz");
+		this.add(label);
+		JLabel label1=new JLabel();
+		label1.setVisible(true);
+		label1.setText("Press Next to play");
+		this.add(label1);
+		JLabel label2=new JLabel();
+		label2.setVisible(true);
+		label2.setText("Press SPACE for instructions");
+		this.add(label2);
 		button=new JButton();
 		button.setText("Next");
 		button.setLocation(100, 700);

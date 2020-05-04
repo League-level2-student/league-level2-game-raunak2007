@@ -69,6 +69,11 @@ public class QuestionManager {
 			label2.setText("Your category is Literature");
 			gameQuestions.add(literatureQuestions[setValue]);
 		}
+		JButton button1=new JButton();
+		button1.setVisible(true);
+		button1.setText("");
+		panel.add(button1);
+		
 	}
 	
 	String showQuestion(Question q) {
