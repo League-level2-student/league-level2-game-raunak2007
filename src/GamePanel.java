@@ -9,9 +9,14 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.Timer;
 
 import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -27,12 +32,10 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	Font font=new Font("Helvetica",48,24);
+	Color brown=new Color(200,100,0);
+	Font font=new Font("Helvetica",48,20);
+	int numberOfMenu=0;
 	JButton button=new JButton();
-	JButton button2=new JButton();
-	JButton button3=new JButton();
-	JButton button4=new JButton();
-	JButton button5=new JButton();
 	JTextField field= new JTextField();
 	JTextPane pane= new JTextPane();
 	TimeUnit timer;
@@ -43,16 +46,19 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 	int currentState=MENU;
 	int score=0;
 	int numberOfTimes;
+	BufferedImage image;
+	boolean gotImage=false;
+	boolean needImage=true;
+	//boolean needHint=false;
 	QuestionManager manager=new QuestionManager(this);
 	ImageIcon imageIcon=new ImageIcon();
 	Timer gameTimer=new Timer();
 	JFrame frame=new JFrame();
-	Image img = Toolkit.getDefaultToolkit().getImage("E:\\trophy.png");
-	Graphics g;
+	Graphics gr;
 	GamePanel(){
-		drawMenuState(g);
+		repaint();
 	}
-	/*void loadImage(String imageFile) {
+	void loadImage(String imageFile) {
 	    if (needImage) {
 	        try {
 	            image = ImageIO.read(this.getClass().getResourceAsStream(imageFile));
@@ -63,8 +69,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 	        needImage = false;
 	    }
 	    }
-	*/
-	/*void draw(Graphics g,int x, int y, int width, int height) {
+	void draw(Graphics g,int x, int y, int width, int height) {
         if (gotImage) {
         	g.drawImage(image, x, y, width, height, null);
         } else {
@@ -72,26 +77,39 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         	g.fillRect(x, y, width, height);
         }
 	}
-	*/
 	void drawMenuState(Graphics g) {
-		//g.setColor(new Color(200,100,0));
-	    g.fillRect(0, 0, QuizWhiz.WIDTH, QuizWhiz.HEIGHT);
+		/*System.out.println(frame.getBackground());
 		JLabel label=new JLabel();
 		label.setVisible(true);
 		label.setText("Quiz Whiz");
+		label.setBounds(100,100,100,25);
 		this.add(label);
 		JLabel label1=new JLabel();
 		label1.setVisible(true);
 		label1.setText("Press Next to play");
+		label1.setBounds(100,300,100,25);
 		this.add(label1);
 		JLabel label2=new JLabel();
 		label2.setVisible(true);
 		label2.setText("Press SPACE for instructions");
+		label2.setBounds(100,600,100,25);
 		this.add(label2);
+		*/
+		numberOfMenu++;
+		g.setColor(Color.BLUE);
+		g.fillRect(0, 0, QuizWhiz.WIDTH, QuizWhiz.HEIGHT);
+		g.setFont(font);
+		g.setColor(Color.YELLOW);
+		g.drawString("Quiz Whiz", 50, 200);
+		g.drawString("Press ENTER to start", 50, 400);
+		g.drawString("Press SPACE for instructions", 25, 600);
 		button=new JButton();
 		button.setText("Next");
-		button.setLocation(100, 700);
+		button.setBounds(100,700,100,25);
+		button.addActionListener(this);
+		if(numberOfMenu<=1) {
 		this.add(button);
+		}
 	}
 	
 	public static BufferedImage rotate (BufferedImage img ){
@@ -106,30 +124,31 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 	
 	void drawEndState(Graphics g) {
 		this.setBackground(Color.GREEN);
-		//g.setColor(new Color(0,200,0));
-		//g.fillRect(0, 0, QuizWhiz.WIDTH, QuizWhiz.HEIGHT);
-		g.setColor(Color.WHITE);
-		imageIcon.setImage(img);
-		g.drawString("You win!", 100, 100);
-		//loadImage("trophy.png");
-		//draw(g,200,200,100,100);
+		g.drawString("You win!",100,100);
+		BufferedImage trophy=imageCollector("trophy.png");
+		g.drawImage(trophy,100,100,250,250,null);
+		
 	}
 	
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
-		System.out.println("j");
-		if(arg0.getSource()==button&&button.getText().equals("Next")&&currentState==MENU||currentState==QUESTION) {
+		System.out.println(button.getText());
+		if(currentState==MENU) {
+			System.out.println("aoc");
+		}
+		if(button.getText().equals("Next")&&currentState==MENU) {
 			currentState++;
+			repaint();
+			System.out.println("j");
 		}
 		else if(arg0.getSource()==button&&button.getText().equals("Move On")&&currentState==GAME) {
 			currentState=QUESTION;
 		}
+		else if(score>=15&&currentState==QUESTION) {
+			currentState=END;
+		}
 		repaint();
-	}
-	
-	void facilitateGame(Graphics g) {
-		manager.chooseQuestion(button);
 	}
 	
 	@Override
@@ -138,18 +157,9 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		if(arg0.getKeyCode()==KeyEvent.VK_SPACE) {
 			JOptionPane.showMessageDialog(null, "The objective of the game is to answer as many questions as possible in a row. If you get a streak of 3 questions in a row, you win. You can press '+' to get a hint");
 		}
-		if(arg0.getKeyCode()==KeyEvent.VK_PLUS&&currentState==GAME) {
-			manager.giveHint(manager.gameQuestions.get(manager.gameQuestions.size()-1).answer);
-		}
-		if(arg0.getKeyCode()==KeyEvent.VK_ENTER) {
-			if(currentState==MENU||currentState==GAME) {
-				currentState++;
-				System.out.println("l");
-			}
-			else if(currentState==END) {
-				currentState=MENU;
-			}
-		}
+		//if(arg0.getKeyCode()==KeyEvent.VK_SHIFT&&currentState==QUESTION) {
+			//needHint=true;
+		//}
 	}
 	
 	@Override
@@ -171,27 +181,62 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		this.add(button);
 		this.setVisible(true);
 	}
+	@Override
 	public void paintComponent(Graphics g){
-		/*if(currentState == MENU){
-		    drawMenuState();
+		if(currentState==MENU) {
+			drawMenuState(g);
 		}
-		
-	else */if(currentState == GAME){
-			System.out.println("hi");
+		else if(currentState == GAME){
 		    drawGameState(g);
-		}
-		else if(currentState == END&&score>=15){
+		}else if(currentState == END){
 		    drawEndState(g);
 		}
 	}
 	
+	public static synchronized void playSound(final String url) {
+		  new Thread(new Runnable() {
+		  // The wrapper thread is unnecessary, unless it blocks on the
+		  // Clip finishing; see comments.
+		    public void run() {
+		      try {
+		        Clip clip = AudioSystem.getClip();
+		        AudioInputStream inputStream = AudioSystem.getAudioInputStream(
+		          Main.class.getResourceAsStream("/path/to/sounds/" + url));
+		        clip.open(inputStream);
+		        clip.start(); 
+		      } catch (Exception e) {
+		        System.err.println(e.getMessage());
+		      }
+		    }
+		  }).start();}
+	
 	void drawGameState(Graphics g) {
-		frame.setBackground(Color.MAGENTA);
+		g.setColor(Color.MAGENTA);
+		g.fillRect(0, 0, 500, 800);
+		System.out.println("jhi");
 		//g.setColor(Color.CYAN);
 		//g.fillRect(0, 0, QuizWhiz.WIDTH, QuizWhiz.HEIGHT);
-		//facilitateGame(g);
-		manager.chooseQuestion(button);
-		manager.showNewQuestion();
+		//zebra(g);
+		while(score<15&&numberOfTimes<7) {
+		currentState=QUESTION;
+		manager.setQuestionAsked();
+		manager.checkQuestion(g);
+		}
+		if(score>=15&&currentState==QUESTION) {
+			drawEndState(g);
+		}
+	}
+	BufferedImage imageCollector(String fileName) {
+			BufferedImage m=null;
+			try {
+			m=ImageIO.read(new File("C://"+fileName));
+			}
+			catch (IOException e) {
+		    }
+			if(m!=null) {
+				System.out.println("nada");
+			}
+		return m;
 	}
 	
 }

@@ -16,6 +16,5 @@ public class QuizWhiz {
     	 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     	 frame.addKeyListener(panel);
     	 frame.add(panel);
-    	 frame.pack();
      }
 }
