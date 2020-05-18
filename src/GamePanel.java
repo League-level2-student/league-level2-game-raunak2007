@@ -4,6 +4,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -32,12 +33,14 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	Window endWindow;
 	Color brown=new Color(200,100,0);
+	Timer frameDraw=new Timer();
 	Font font=new Font("Helvetica",48,20);
 	int numberOfMenu=0;
 	JButton button=new JButton();
-	JTextField field= new JTextField();
-	JTextPane pane= new JTextPane();
+	//JTextField field= new JTextField();
+	//JTextPane pane= new JTextPane();
 	TimeUnit timer;
 	final int MENU=0;
 	final int GAME=1;
@@ -52,11 +55,12 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 	//boolean needHint=false;
 	QuestionManager manager=new QuestionManager(this);
 	ImageIcon imageIcon=new ImageIcon();
-	Timer gameTimer=new Timer();
-	JFrame frame=new JFrame();
+	JFrame frame;
 	Graphics gr;
-	GamePanel(){
+	GamePanel(JFrame frame){
 		repaint();
+		this.frame=frame;
+    	//frameDraw.start();
 	}
 	void loadImage(String imageFile) {
 	    if (needImage) {
@@ -100,16 +104,17 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		g.fillRect(0, 0, QuizWhiz.WIDTH, QuizWhiz.HEIGHT);
 		g.setFont(font);
 		g.setColor(Color.YELLOW);
-		g.drawString("Quiz Whiz", 50, 200);
-		g.drawString("Press ENTER to start", 50, 400);
-		g.drawString("Press SPACE for instructions", 25, 600);
+		g.drawString("Quiz Whiz", 50, 100);
+		g.drawString("Press the button to start", 50, 200);
+		g.drawString("Press SPACE for instructions", 25, 300);
 		button=new JButton();
 		button.setText("Next");
-		button.setBounds(100,700,100,25);
+		//button.setBounds(100,700,100,25);
 		button.addActionListener(this);
 		if(numberOfMenu<=1) {
 		this.add(button);
 		}
+		frame.setSize(300,400);
 	}
 	
 	public static BufferedImage rotate (BufferedImage img ){
@@ -123,31 +128,39 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 	}
 	
 	void drawEndState(Graphics g) {
-		this.setBackground(Color.GREEN);
-		g.drawString("You win!",100,100);
-		BufferedImage trophy=imageCollector("trophy.png");
-		g.drawImage(trophy,100,100,250,250,null);
+		g.setColor(Color.GRAY);
+		g.drawRect(0, 0, 300, 400);
+		if(score>=4) {
+			JOptionPane.showMessageDialog(null,"Congrats, your final score is: "+score);
+		}
+		if(score<10) {
+			JOptionPane.showMessageDialog(null,"Your final score is: "+score);
+		}
 		
 	}
 	
+	void updateGameState() {
+		
+	}
+	void updateEndState() {
+	
+	}
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
 		System.out.println(button.getText());
 		if(currentState==MENU) {
-			System.out.println("aoc");
 		}
 		if(button.getText().equals("Next")&&currentState==MENU) {
 			currentState++;
 			repaint();
-			System.out.println("j");
 		}
-		else if(arg0.getSource()==button&&button.getText().equals("Move On")&&currentState==GAME) {
-			currentState=QUESTION;
+		if(currentState == GAME){
+		    updateGameState();
+		}else if(currentState == END){
+		    updateEndState();
 		}
-		else if(score>=15&&currentState==QUESTION) {
-			currentState=END;
-		}
+		System.out.println(currentState);
 		repaint();
 	}
 	
@@ -174,13 +187,6 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		
 	}
 	
-	public void adjustButton(JButton button,String text) {
-		button.setText(text);
-		button.addActionListener(this);
-		frame.setSize(500,800);
-		this.add(button);
-		this.setVisible(true);
-	}
 	@Override
 	public void paintComponent(Graphics g){
 		if(currentState==MENU) {
@@ -200,9 +206,9 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		    public void run() {
 		      try {
 		        Clip clip = AudioSystem.getClip();
-		        AudioInputStream inputStream = AudioSystem.getAudioInputStream(
-		          Main.class.getResourceAsStream("/path/to/sounds/" + url));
-		        clip.open(inputStream);
+		        //AudioInputStream inputStream = AudioSystem.getAudioInputStream(
+		        //Main.class.getResourceAsStream("/path/to/sounds/" + url));
+		        //clip.open(inputStream);
 		        clip.start(); 
 		      } catch (Exception e) {
 		        System.err.println(e.getMessage());
@@ -211,19 +217,10 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		  }).start();}
 	
 	void drawGameState(Graphics g) {
-		g.setColor(Color.MAGENTA);
-		g.fillRect(0, 0, 500, 800);
-		System.out.println("jhi");
-		//g.setColor(Color.CYAN);
-		//g.fillRect(0, 0, QuizWhiz.WIDTH, QuizWhiz.HEIGHT);
-		//zebra(g);
-		while(score<15&&numberOfTimes<7) {
+		while(numberOfTimes<2) {
 		currentState=QUESTION;
 		manager.setQuestionAsked();
 		manager.checkQuestion(g);
-		}
-		if(score>=15&&currentState==QUESTION) {
-			drawEndState(g);
 		}
 	}
 	BufferedImage imageCollector(String fileName) {

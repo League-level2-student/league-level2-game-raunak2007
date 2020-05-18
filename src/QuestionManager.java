@@ -28,52 +28,34 @@ public class QuestionManager {
 		this.panel=p;
 	}
 	void chooseQuestion() {
-		JLabel label1=new JLabel();
-		JLabel label2=new JLabel();
-		label1.setLocation(100, 600);
 		JOptionPane.showMessageDialog(null,"Choosing category...");
 		category=new Random().nextInt(5);
 		setValue=new Random().nextInt(3);
 		if(category==0) {
-			//g.setColor(Color.BLACK);
-			//g.drawString("Your category is History",100,600);
-			label2.setLocation(100, 600);
 			JOptionPane.showMessageDialog(null,"Your category is History");
 			if(historyQuestions[setValue].isAsked==false) {
 				gameQuestions.add(historyQuestions[setValue]);
 			}
 		}
 		if(category==1){
-			//g.setColor(Color.BLACK);
-			//g.drawString("Your category is Science",100,600);
-			label2.setLocation(100, 600);
 			JOptionPane.showMessageDialog(null,"Your category is Science");
 			if(scienceQuestions[setValue].isAsked==false) {
 				gameQuestions.add(scienceQuestions[setValue]);
 			}
 		}
 		if(category==2) {
-			//g.setColor(Color.BLACK);
-			//g.drawString("Your category is Geography",100,600);
-			label2.setLocation(100, 600);
 			JOptionPane.showMessageDialog(null,"Your category is Geography");
 			if(geographyQuestions[setValue].isAsked==false) {
 				gameQuestions.add(geographyQuestions[setValue]);
 			}		
 		}
 		if(category==3){
-			//g.setColor(Color.BLACK);
-			//g.drawString("Your category is Music",100,600);
-			label2.setLocation(100, 600);
 			JOptionPane.showMessageDialog(null,"Your category is Music");
 			if(musicQuestions[setValue].isAsked==false) {
 				gameQuestions.add(musicQuestions[setValue]);
 			}
 		}
 		if(category==4){
-			//g.setColor(Color.BLACK);
-			//g.drawString("Your category is Literature",100,600);
-			label2.setLocation(100, 600);
 			JOptionPane.showMessageDialog(null,"Your category is Literature");
 			if(literatureQuestions[setValue].isAsked==false) {
 				gameQuestions.add(literatureQuestions[setValue]);
@@ -87,14 +69,16 @@ public class QuestionManager {
 		q.isAsked=true;
 		return userAnswer;
 	}*/
-	void giveHint() {
+	/*void giveHint() {
 		JOptionPane.showMessageDialog(null, "It starts with a "+questionAsked.answer.charAt(0)+" and ends with an "+questionAsked.answer.charAt(questionAsked.answer.length()-1)+".");
 	}
+	*/
 	void setQuestionAsked() {
 				chooseQuestion();
 				questionAsked=gameQuestions.get(gameQuestions.size()-1);
 				while(questionAsked.isAsked==true) {
-					
+					chooseQuestion();
+					questionAsked=gameQuestions.get(gameQuestions.size()-1);
 				}
 	}
 	String showNewQuestion() {
@@ -121,14 +105,17 @@ public class QuestionManager {
 			//panel.button.setText("Next Question");
 		}
 		else {
-			JOptionPane.showMessageDialog(null,"Sorry, the correct answer is:"+gameQuestions.get(gameQuestions.size()-1).answer);
+			JOptionPane.showMessageDialog(null,"Sorry, the correct answer is:\n"+gameQuestions.get(gameQuestions.size()-1).answer);
 			//panel.button.setText("Next Question");
 		}
 		questionAsked.isAsked=true;
 		panel.numberOfTimes++;
-		if(panel.score<18) {
-			JOptionPane.showMessageDialog(null,"Your score is: "+panel.score);
+		if(panel.numberOfTimes>=2) {
+			panel.currentState=panel.END;
 		}
+		/*if(panel.score<18) {
+			JOptionPane.showMessageDialog(null,"Your score is: "+panel.score);
+		}*/
 		
 	}
 }
